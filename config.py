@@ -9,16 +9,15 @@ db_table_name = 'muru_ku_jobs'
 connection = MySQLdb.connect(host=db_host,
                       user=db_user,
                       password=db_password,
-                      database=db_name,
                       charset='utf8mb4')
 cursor = connection.cursor()
 
 
 def create_database():
     try:
-        cursor.execute(f"use {db_name}")
         sql = f"create database if not exists {db_name} default charset utf8mb4 collate utf8mb4_general_ci;"
         cursor.execute(sql)
+        cursor.execute(f"use {db_name}")
         connection.commit()
     except Exception as e:
         print(e)
