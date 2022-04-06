@@ -1,40 +1,10 @@
 import requests
 from lxml import html
-import pymysql as MySQLdb
 import sys
-
-db_host = 'localhost'
-db_user = 'root'
-db_password = 'test'
-db_name = 'muru_ku_startups'
-db_table_name = 'muru_ku_jobs'
-
-connection = MySQLdb.connect(host=db_host,
-                      user=db_user,
-                      password=db_password,
-                      database=db_name,
-                      charset='utf8mb4')
-cursor = connection.cursor()
+from config import db_table_name,connection, cursor, create_database, create_table
 
 headers = {'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
            'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36'}
-
-
-def create_database():
-    try:
-        sql = f"create database if not exists {db_name} default charset utf8mb4 collate utf8mb4_general_ci;"
-        cursor.execute(sql)
-        connection.commit()
-    except Exception as e:
-        print(e)
-
-def create_table():
-    try:
-        sql = f"""create table if not exists {db_table_name} (id int(11) not null auto_increment,website_name text,website_url text,career_url text,job_title text,location text,description text,primary key(id)) DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;"""
-        cursor.execute(sql)
-        connection.commit()
-    except Exception as e:
-        print(e)
 
 
 def get_description(dom):
@@ -105,6 +75,7 @@ def get_job_data(session, job_url):
         except Exception as e:
             print("data not found")
 
+
 def get_career_data(session):
     career_url = "http://www.hispeedcity.com/8.html"
     response = session.get(career_url, headers=headers)
@@ -121,6 +92,7 @@ def get_career_data(session):
                     get_job_data(session, job_url)
         except:
             print("job url not forund")
+
 
 if __name__ == "__main__":
     create_database()
